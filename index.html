@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>zkSNARK wallpapers</title>
+<link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Bricolage+Grotesque:wght@400;600&family=Caveat:wght@600&display=swap" rel="stylesheet">
+<style>
+:root{--accent:#f4b728;--ink:#000;--paper:#ece8df;--mute:#8a867c;--line:#2b2a26;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--paper);font:16px/1.5 'Bricolage Grotesque',system-ui,sans-serif;background:#000 radial-gradient(60% 50% at 28% 32%,color-mix(in srgb,var(--accent) 16%,#000),#000 70%) no-repeat;transition:background .6s}
+.wrap{max-width:1040px;margin:0 auto;padding:36px 20px 60px;display:grid;grid-template-columns:minmax(0,370px) minmax(0,1fr);gap:64px;align-items:start}
+@media(max-width:780px){.wrap{grid-template-columns:1fr;gap:36px}}
+.stage{position:relative;padding-top:6px}
+canvas{display:block;width:100%;max-width:360px;height:auto;border-radius:34px;border:1px solid var(--line);transform:rotate(-1.4deg);box-shadow:0 40px 100px -40px color-mix(in srgb,var(--accent) 45%,transparent);background:#000;transition:outline-color .2s}
+body.drag canvas{outline:3px solid var(--accent);outline-offset:6px}
+h1{font:400 clamp(40px,6vw,64px)/.95 'Abril Fatface',Georgia,serif;margin:0 0 10px}
+.note{font:600 22px/1.1 'Caveat',cursive;color:var(--accent);transform:rotate(-2deg);margin:0;max-width:300px;display:flex;gap:8px;align-items:flex-start}
+.note svg{flex:none;width:34px;height:34px;stroke:var(--accent);fill:none;stroke-width:2;stroke-linecap:round;margin-top:12px}
+.col{display:flex;flex-direction:column;gap:26px;padding-top:6px}
+.pick{display:inline-block;align-self:flex-start;border-bottom:2px solid var(--accent);padding:2px 0;cursor:pointer;font-size:19px}
+.pick input{display:none}
+.pick:focus-within{outline:2px solid var(--accent);outline-offset:4px}
+.numrow{display:flex;align-items:baseline;gap:6px;border-bottom:1px solid var(--line)}
+.numrow span{font:400 44px 'Abril Fatface',Georgia,serif;color:var(--mute)}
+.numrow input{background:none;border:0;color:var(--paper);font:400 44px 'Abril Fatface',Georgia,serif;width:100%;padding:0;outline:none}
+.numrow:focus-within{border-color:var(--accent)}
+.dots{display:flex;gap:14px;align-items:center}
+.dots input{appearance:none;-webkit-appearance:none;width:46px;height:46px;border:0;padding:0;border-radius:50%;background:none;cursor:pointer}
+.dots input::-webkit-color-swatch-wrapper{padding:0}
+.dots input::-webkit-color-swatch{border:2px solid #000;border-radius:50%;box-shadow:0 0 0 1px var(--line)}
+.dots input::-moz-color-swatch{border:2px solid #000;border-radius:50%}
+.lnk{background:none;border:0;color:var(--mute);font:inherit;text-decoration:underline;text-underline-offset:4px;cursor:pointer;padding:0}
+.lnk:hover{color:var(--paper)}
+.sl{display:grid;grid-template-columns:130px 1fr;align-items:center;gap:12px;color:var(--mute);font-size:15px}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.tag{background:none;border:0;border-bottom:1px solid var(--line);color:var(--paper);font:inherit;padding:6px 0;width:100%;outline:none}
+.tag:focus{border-color:var(--accent)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.chips button{background:none;border:1px solid var(--line);color:var(--paper);border-radius:99px;padding:3px 12px;font:inherit;font-size:14px;cursor:pointer}
+.chips button:hover{border-color:var(--accent);color:var(--accent)}
+.chk{display:flex;gap:10px;align-items:center;cursor:pointer}
+.chk input{accent-color:var(--accent);width:18px;height:18px}
+select{background:#000;color:var(--paper);border:1px solid var(--line);border-radius:6px;padding:8px;font:inherit}
+.dl{background:var(--accent);color:#000;border:0;border-radius:4px 14px 4px 14px;padding:15px 22px;font:600 18px 'Bricolage Grotesque',sans-serif;cursor:pointer;align-self:flex-start;transition:transform .15s}
+.dl:hover{transform:rotate(-1deg) scale(1.02)}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.foot{color:var(--mute);font-size:13px;max-width:380px}
+[hidden]{display:none!important}
+.top{max-width:1040px;margin:0 auto;padding:22px 20px 0;display:flex;justify-content:flex-end}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:99px;padding:3px;gap:2px;align-self:flex-start}
+.seg button{background:none;border:0;color:var(--mute);font:inherit;font-size:15px;padding:6px 16px;border-radius:99px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#000;font-weight:600}
+body.land .wrap{grid-template-columns:1fr;gap:36px}
+body.land canvas{max-width:780px;border-radius:16px;transform:rotate(-.5deg)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="top"><div class="seg" id="mode" role="group" aria-label="Device type"><button data-v="phone" aria-pressed="true">Phone</button><button data-v="pc" aria-pressed="false">Desktop</button></div></div>
+<div class="wrap">
+  <div class="stage"><canvas id="c" width="1170" height="2532" aria-label="Wallpaper preview"></canvas></div>
+  <div class="col">
+    <div>
+      <h1>zkSNARK<br>wallpapers</h1>
+      <p class="note"><svg viewBox="0 0 34 34"><path d="M4 6c10-2 20 2 24 20M28 26l-6-4M28 26l1-7"/></svg>made for holders. your PFP never leaves your browser.</p>
+    </div>
+
+    <div class="lookrow" hidden>
+      <div class="seg" id="sty" role="group" aria-label="Look"><button data-v="1" aria-pressed="true">v1 classic</button><button data-v="2" aria-pressed="false">v2 outline</button><button data-v="3" aria-pressed="false">v3 terminal</button></div>
+      <p class="note" style="font-size:19px;margin-top:8px">v2 puts your number behind you. v3 is a terminal.</p>
+    </div>
+    <label class="pick"><input type="file" id="file" accept="image/*">Pick your PFP, or drop it anywhere</label>
+
+    <div class="numrow"><span>#</span><input id="num" value="1252" inputmode="numeric" maxlength="5" aria-label="Your zkSNARK number"></div>
+
+    <div>
+      <div class="dots"><input type="color" id="d0" value="#6a3d9a" aria-label="Dot 1"><input type="color" id="d1" value="#4ee3f0" aria-label="Dot 2"><input type="color" id="d2" value="#d8f000" aria-label="Dot 3"><button class="lnk" id="reroll">try another mix</button></div>
+      <p class="note" style="margin-top:8px;font-size:20px"><svg viewBox="0 0 34 34" style="transform:scaleY(-1);margin-top:0"><path d="M4 6c10-2 20 2 24 20M28 26l-6-4M28 26l1-7"/></svg>colors come from your PFP. tap a dot to swap one.</p>
+    </div>
+
+    <div>
+      <input class="tag" id="tag" placeholder="a small line under the number (optional)" maxlength="28">
+      <div class="chips"><button data-t="ZEC">ZEC</button><button data-t="shielded">shielded</button><button data-t="privacy is normal">privacy is normal</button><button data-t="">none</button></div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <label class="sl">glow<input type="range" id="glow" min="0" max="100" value="55"></label>
+      <label class="sl">size<input type="range" id="size" min="50" max="120" value="88"></label>
+      <label class="sl">height<input type="range" id="pos" min="-20" max="30" value="4"></label>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <label class="chk"><input type="checkbox" id="rmbg" checked>cut out the black background</label>
+      <label class="chk"><input type="checkbox" id="grid">faint 26 × 26 pixel grid behind it</label>
+      <label class="chk"><input type="checkbox" id="hide">shield my number</label>
+      <p class="note" style="font-size:19px;margin-top:-2px">feeling mysterious? that hides the digits.</p>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <label style="display:flex;gap:10px;align-items:center;color:var(--mute)">device <select id="dev"></select></label>
+      <div class="seg" id="lay" role="group" aria-label="Text position" hidden><button data-v="1" aria-pressed="true">text top left</button><button data-v="2" aria-pressed="false">text on the right</button></div>
+    </div>
+
+    <button class="dl" id="dl">Download wallpaper</button>
+    <p class="foot">Unofficial, made by a holder for holders. Nothing is uploaded, it all runs on your device.</p>
+  </div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const cv=$('c'),ctx=cv.getContext('2d');
+let mode="phone",lay=1,style=1,src=null,clean=null,palettes=[],pIdx=0,raf=0;
+const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const dist=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1],a[2]-b[2]);
+const hex=(r,g,b)=>'#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('');
+const rgba=(h,a)=>{const n=parseInt(h.slice(1),16);return `rgba(${n>>16},${n>>8&255},${n&255},${a})`};
+const lum=h=>{const n=parseInt(h.slice(1),16);return .2126*(n>>16)+.7152*(n>>8&255)+.0722*(n&255)};
+
+function extract(img){
+  const s=64,t=document.createElement('canvas');t.width=t.height=s;
+  const x=t.getContext('2d',{willReadFrequently:true});x.drawImage(img,0,0,s,s);
+  const d=x.getImageData(0,0,s,s).data,bins={},bg=[d[0],d[1],d[2]];
+  for(let i=0;i<d.length;i+=4){
+    if(d[i+3]<200)continue;
+    const c=[d[i],d[i+1],d[i+2]],mx=Math.max(...c),mn=Math.min(...c);
+    if(mx<40||dist(c,bg)<40)continue;
+    const k=(c[0]>>4)+','+(c[1]>>4)+','+(c[2]>>4),sat=mx?(mx-mn)/mx:0;
+    const b=bins[k]||(bins[k]={n:0,r:0,g:0,b:0,sat});
+    b.n++;b.r+=c[0];b.g+=c[1];b.b+=c[2];
+  }
+  const list=Object.values(bins).map(b=>({c:[Math.round(b.r/b.n),Math.round(b.g/b.n),Math.round(b.b/b.n)],w:b.n*(.4+b.sat)})).sort((a,b)=>b.w-a.w);
+  const out=[];
+  for(let st=0;st<Math.min(list.length,6)&&out.length<4;st++){
+    const pick=[list[st].c];
+    for(const e of list){if(pick.length===3)break;if(pick.every(p=>dist(p,e.c)>70))pick.push(e.c)}
+    while(pick.length<3)pick.push(pick[pick.length-1]);
+    out.push(pick.map(c=>hex(...c)));
+  }
+  return out.length?out:[['#ffffff','#999999','#444444']];
+}
+function setPalette(p){
+  ['d0','d1','d2'].forEach((id,i)=>$(id).value=p[i]);
+  const best=[...p].sort((a,b)=>lum(b)-lum(a))[0];
+  document.documentElement.style.setProperty('--accent',lum(best)>90?best:'#f4b728');
+}
+function removeBg(img){
+  const w=img.width,h=img.height,t=document.createElement('canvas');t.width=w;t.height=h;
+  const x=t.getContext('2d',{willReadFrequently:true});x.drawImage(img,0,0);
+  const id=x.getImageData(0,0,w,h),d=id.data,ref=[d[0],d[1],d[2]],seen=new Uint8Array(w*h),st=[];
+  const ok=i=>d[i*4+3]>0&&dist([d[i*4],d[i*4+1],d[i*4+2]],ref)<32;
+  for(let i=0;i<w;i++)st.push(i,(h-1)*w+i);
+  for(let j=0;j<h;j++)st.push(j*w,j*w+w-1);
+  while(st.length){
+    const i=st.pop();if(seen[i]||!ok(i))continue;
+    seen[i]=1;d[i*4+3]=0;const px=i%w;
+    if(px>0)st.push(i-1);if(px<w-1)st.push(i+1);
+    if(i>=w)st.push(i-w);if(i<w*(h-1))st.push(i+w);
+  }
+  x.putImageData(id,0,0);return t;
+}
+
+function render(t=1){
+  const [W,H]=$('dev').value.split('x').map(Number);
+  if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H}
+  const land=W>H,u=land?H*.7:W,L1=land&&lay===1;
+  document.body.classList.toggle('land',land);
+  const cols=['d0','d1','d2'].map(i=>$(i).value),glow=$('glow').value/100*t;
+  const n=$('num').value.replace(/\D/g,''),tag=$('tag').value.trim(),hide=$('hide').checked;
+  const cx=land?(L1?W*.7:W*.28):W/2;
+  let ax=land?(L1?W*.07:W*.72):W/2,al=L1?'left':'center';
+  if(style===3&&!land){ax=W*.09;al='left'}
+  const dy=land?(L1?H*.2:H*.33):H*.395,dr=u*.0115;
+  const FONT="'Abril Fatface',Georgia,serif",MONO="ui-monospace,Menlo,Consolas,monospace";
+  ctx.fillStyle='#000';ctx.fillRect(0,0,W,H);
+  if($('grid').checked){
+    ctx.strokeStyle='rgba(255,255,255,.045)';ctx.lineWidth=2;ctx.beginPath();
+    const c=land?H/18:W/26;for(let x=0;x<=W;x+=c){ctx.moveTo(x,0);ctx.lineTo(x,H)}
+    for(let y=0;y<=H;y+=c){ctx.moveTo(0,y);ctx.lineTo(W,y)}
+    ctx.stroke();
+  }
+  const cw=(land?H*.55:W)*($('size').value/100),bottom=H*(1+$('pos').value/100);
+  if(style===2&&n){ // v2: the number as a big outline behind the character
+    ctx.save();const txt=hide?'#????':'#'+n;ctx.font=`100px ${FONT}`;
+    const fs=100*(land?W*.4:W*.94)/ctx.measureText(txt).width;
+    ctx.font=`${fs}px ${FONT}`;ctx.textAlign='center';ctx.lineWidth=u*.004;ctx.strokeStyle=rgba(cols[1],.6);
+    ctx.strokeText(txt,cx,H*(land?.76:.7));ctx.restore();
+  }
+  if(src){
+    const img=$('rmbg').checked?clean:src,ch=cw*(img.height/img.width),top=bottom-ch;
+    if(glow>0){
+      const r=cw*.75,gy=top+ch*.45,g=ctx.createRadialGradient(cx,gy,0,cx,gy,r);
+      g.addColorStop(0,rgba(cols[0],.55*glow));g.addColorStop(.5,rgba(cols[1],.18*glow));g.addColorStop(1,rgba(cols[1],0));
+      ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+    }
+    ctx.imageSmoothingEnabled=false;
+    if(t<1){
+      const k=Math.round(3*Math.pow(14,t)),tmp=document.createElement('canvas');
+      tmp.width=k;tmp.height=Math.max(1,Math.round(k*img.height/img.width));
+      const tc=tmp.getContext('2d');tc.imageSmoothingEnabled=true;tc.drawImage(img,0,0,tmp.width,tmp.height);
+      ctx.drawImage(tmp,cx-cw/2,top,cw,ch);
+    }else ctx.drawImage(img,cx-cw/2,top,cw,ch);
+  }else{
+    const top=bottom-cw,L=u*.05;
+    ctx.strokeStyle='rgba(255,255,255,.22)';ctx.lineWidth=5;ctx.beginPath();
+    [[cx-cw/2,top,1,1],[cx+cw/2,top,-1,1]].forEach(([x,y,sx,sy])=>{ctx.moveTo(x,y+L*sy);ctx.lineTo(x,y);ctx.lineTo(x+L*sx,y)});
+    ctx.stroke();
+    ctx.fillStyle='rgba(255,255,255,.3)';ctx.textAlign='center';
+    ctx.font=`${u*.065}px Caveat,cursive`;ctx.fillText('your zkSNARK goes here',cx,top+cw*.35);
+  }
+  // dots
+  cols.forEach((c,i)=>{ctx.fillStyle=c;ctx.beginPath();
+    ctx.arc(al==='left'?ax+dr+i*u*.1:ax+(i-1)*u*.13,dy,dr,0,7);ctx.fill()});
+  ctx.textBaseline='alphabetic';ctx.textAlign=al;
+  const drawNum=(x,y)=>{
+    if(!n)return;ctx.fillStyle='rgba(255,255,255,.72)';ctx.font=`${u*.085}px ${FONT}`;
+    if(hide){
+      const sq=u*.04,gap=sq*.4,hw=ctx.measureText('#').width,tw=hw+u*.015+n.length*(sq+gap)-gap;
+      let px=al==='left'?x:x-tw/2;ctx.textAlign='left';ctx.fillText('#',px,y);px+=hw+u*.015;
+      for(let i=0;i<n.length;i++){ctx.fillRect(px,y-sq*1.05,sq,sq*1.05);px+=sq+gap}
+      ctx.textAlign=al;
+    }else ctx.fillText('#'+n,x,y);
+  };
+  const drawTag=(x,y)=>{
+    if(!tag)return;ctx.fillStyle='rgba(255,255,255,.5)';ctx.font=`${u*.038}px 'Bricolage Grotesque',system-ui,sans-serif`;
+    if('letterSpacing' in ctx)ctx.letterSpacing=(u*.006)+'px';
+    ctx.fillText(tag.toLowerCase(),x,y);
+    if('letterSpacing' in ctx)ctx.letterSpacing='0px';
+  };
+  if(style===3){ // v3: terminal
+    const m=u*.036,lh=m*1.75,ty=dy+u*.23,ny=ty+u*.105;
+    ctx.font=`${m}px ${MONO}`;ctx.fillStyle=cols[1];ctx.fillText('root@zksnarks:~$ verify',ax,dy+u*.085);
+    ctx.fillStyle='#fff';ctx.font=`${u*.15}px ${FONT}`;ctx.fillText('zkSNARK',ax,ty);
+    drawNum(ax,ny);
+    let h=((parseInt(n||'0')+1)*2654435761)>>>0,hs='';
+    for(let i=0;i<5;i++){h=(h*1664525+1013904223)>>>0;hs+=(h>>>24).toString(16).padStart(2,'0')}
+    ctx.font=`${m}px ${MONO}`;ctx.fillStyle='rgba(255,255,255,.55)';
+    ctx.fillText('proof   0x'+hs.slice(0,8)+'...'+hs.slice(-4),ax,ny+u*.08);
+    ctx.fillText('status  valid, shielded [ok]',ax,ny+u*.08+lh);
+    drawTag(ax,ny+u*.08+lh*2.1);
+    ctx.fillStyle='rgba(0,0,0,.16)';const st=Math.max(4,Math.round(u*.007));
+    for(let y=0;y<H;y+=st*2)ctx.fillRect(0,y,W,st);
+  }else{
+    const small=style===2,ty=dy+u*(small?.115:.19),ny=ty+u*.115;
+    ctx.fillStyle='#fff';ctx.font=`${u*(small?.1:.17)}px ${FONT}`;ctx.fillText('zkSNARK',ax,ty);
+    if(!small)drawNum(ax,ny);
+    drawTag(ax,small?ty+u*.075:ny+u*.085);
+  }
+}
+function reveal(){
+  cancelAnimationFrame(raf);
+  if(reduce){render();return}
+  const s=performance.now();
+  (function f(now){const t=Math.min(1,(now-s)/800);render(t);if(t<1)raf=requestAnimationFrame(f)})(s);
+}
+function load(f){
+  if(!f||!f.type.startsWith('image/'))return;
+  const img=new Image();
+  img.onload=()=>{src=img;clean=removeBg(img);palettes=extract(img);pIdx=0;setPalette(palettes[0]);reveal()};
+  img.src=URL.createObjectURL(f);
+}
+$('file').addEventListener('change',e=>load(e.target.files[0]));
+addEventListener('dragover',e=>{e.preventDefault();document.body.classList.add('drag')});
+addEventListener('dragleave',e=>{if(!e.relatedTarget)document.body.classList.remove('drag')});
+addEventListener('drop',e=>{e.preventDefault();document.body.classList.remove('drag');load(e.dataTransfer.files[0])});
+$('reroll').onclick=()=>{if(!palettes.length)return;pIdx=(pIdx+1)%palettes.length;setPalette(palettes[pIdx]);render()};
+document.querySelectorAll('.chips button').forEach(b=>b.onclick=()=>{$('tag').value=b.dataset.t;render()});
+['num','d0','d1','d2','glow','size','pos','rmbg','grid','hide','dev','tag'].forEach(id=>$(id).addEventListener('input',()=>render()));
+['d0','d1','d2'].forEach(id=>$(id).addEventListener('input',()=>{const p=['d0','d1','d2'].map(i=>$(i).value);setPalette(p)}));
+$('dl').onclick=()=>cv.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`zkSNARK-${$('num').value||'wallpaper'}-${cv.width}x${cv.height}.png`;a.click()},'image/png');
+Promise.all(["100px 'Abril Fatface'","20px Caveat","20px 'Bricolage Grotesque'"].map(f=>document.fonts?document.fonts.load(f):0)).then(()=>render(),()=>render());
+const DEV={phone:[['1170x2532','iPhone'],['1290x2796','iPhone Pro Max'],['1080x2400','Android']],
+ pc:[['1920x1080','Full HD 1920 × 1080'],['2560x1440','1440p 2560 × 1440'],['2880x1800','MacBook 2880 × 1800'],['3440x1440','Ultrawide 3440 × 1440'],['3840x2160','4K 3840 × 2160']]};
+function bindSeg(id,cb){const g=$(id);g.querySelectorAll('button').forEach(b=>b.onclick=()=>{g.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));cb(b.dataset.v)})}
+function fill(m){mode=m;$('dev').innerHTML=DEV[m].map(([v,t])=>`<option value="${v}">${t}</option>`).join('');$('lay').hidden=m==='phone';render()}
+bindSeg('mode',fill);
+bindSeg('lay',v=>{lay=+v;render()});
+bindSeg('sty',v=>{style=+v;render()});
+fill('phone');
+</script>
+</body>
+</html>
